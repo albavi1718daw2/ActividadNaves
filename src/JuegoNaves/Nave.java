@@ -77,7 +77,6 @@ class Nave extends Thread {
 	}
 	
 	public Disparo disparar() {
-		// Resto a las posiciones x e y para contrarrestar el tamaño de la imagen
 		return new Disparo((this.x), (this.y), 30, 2, 30);
 	}
 	
