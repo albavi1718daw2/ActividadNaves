@@ -35,19 +35,20 @@ class Nave extends Thread {
 	}
 
 	// Movemos las naves
-	public void moure() {
+	public synchronized void moure() {
 
 		// Si llega a los márgenes...
-		if (x >= 330 - tx || x <= tx - 110) dsx = -dsx;
-		if (y >= 400 || y <= ty - 90) dsy = -dsy;
-		
+		if (x >= 350 - tx || x <= tx)
+			dsx = -dsx;
+		if (y >= 450 - ty || y <= ty)
+			dsy = -dsy;
 		// Movemos la nave automáticamente
 		x = x + dsx;
 		y = y + dsy;
 	}
 	
 	// Las pintamos
-	public void pinta (Graphics g) {
+	public synchronized void pinta (Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.drawImage(this.image, x, y, null);
 	}
@@ -77,7 +78,7 @@ class Nave extends Thread {
 	
 	public Disparo disparar() {
 		// Resto a las posiciones x e y para contrarrestar el tamaño de la imagen
-		return new Disparo((this.x - 125), (this.y - 120), 30, 2, 30);
+		return new Disparo((this.x), (this.y), 30, 2, 30);
 	}
 	
 	// Cogemos las posiciones de X e Y

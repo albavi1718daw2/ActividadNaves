@@ -27,8 +27,8 @@ public class Disparo extends Thread {
 		t.start();
 	}
 
-	// Pintamos el láser
-	public void pinta (Graphics g) {
+	// Pintamos el disparo
+	public synchronized void pinta (Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.drawImage(this.image, x, y, null);
 	}
@@ -47,8 +47,9 @@ public class Disparo extends Thread {
 	}
 
 	// Movemos el disparo
-	public void disparo() {
+	public synchronized void disparo() {
 		y = y - ty;
+		
 	}
 
 	// Cogemos las posiciones de X e Y

@@ -20,6 +20,7 @@ class PanelNave extends JPanel implements Runnable, KeyListener {
 
 		nau = new Vector<>();
 
+		// Creamos las naves enemigas
 		for (int i = 0; i < numNaus; i++) {
 
 			Random rand = new Random();
@@ -27,7 +28,7 @@ class PanelNave extends JPanel implements Runnable, KeyListener {
 			int posX = rand.nextInt(100) + 30;
 			int posY = rand.nextInt(100) + 30;
 			int dX = rand.nextInt(3) + 1;
-			int dY = rand.nextInt(3) + 1;
+			int dY = rand.nextInt(3) + 1; 
 			String nomNau = Integer.toString(i);
 			nau.add(new Nave(nomNau, posX, posY, dX, dY, velocitat));
 		}
@@ -55,20 +56,45 @@ class PanelNave extends JPanel implements Runnable, KeyListener {
 		}                   
 	}
 
-	public void paintComponent(Graphics g) {
+	public synchronized void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		for (int i = 0; i < nau.size(); ++i) nau.get(i).pinta(g);
 		nauPropia.pinta(g);
 
+		// Pintamos los disparos
 		for (int i = 0; i < disparo.size(); i++) {
 			disparo.get(i).pinta(g);
-			Disparo numDisparo = disparo.get(i);
-			if (numDisparo.getY() <= 0 - 180) {
+			// Cogemos el disparo y si llega a los márgenes, lo quitamos
+			if (disparo.get(i).getY() <= 0) {
 				disparo.remove(i);
 			}
 		}      
+		
+		// Miramos si el disparo ha tocado a alguna nave
+		for (int i = 0; i < disparo.size(); i++) {
+			// Cogemos el disparo y sus posiciones
+			int posXdisparo = disparo.get(i).getX(); 
+			int posYdisparo = disparo.get(i).getY();
+			for (int j = 0; j < nau.size(); j++) {
+				// Cogemos la nave y sus posiciones
+				double calculo;				
+				int posXnave = nau.get(j).getX();
+				int posYnave = nau.get(j).getY();
+				calculo = Math.sqrt(Math.pow((posXnave - posXdisparo), 2) +
+					Math.pow((posYnave - posYdisparo), 2));
+				if (calculo <= 20) {
+					nau.remove(j);					
+					disparo.remove(i);
+				}
+				// Si la cantidad de naves es 0, hemos ganado
+				if (nau.size() == 0) {
+					System.out.println("¡Has ganado!");
+					System.exit(0);  
+				}
+			}
+		}
 	}
-
+            
 	// Métodos necesarios para detectar los movimientos del teclado
 	@Override
 	public void keyTyped(KeyEvent e) {
